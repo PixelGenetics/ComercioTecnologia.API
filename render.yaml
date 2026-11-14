@@ -1,0 +1,20 @@
+# Blueprint de Render (https://dashboard.render.com → New → Blueprint → este repositorio).
+# Crea el servicio web gratuito con Docker. Render pide en pantalla los valores marcados con sync: false.
+services:
+  - type: web
+    name: comerciotecnologia-api
+    runtime: docker
+    plan: free
+    region: virginia          # cerca de Supabase us-east-1
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    autoDeploy: true          # despliega en cada push a main
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ConnectionStrings__DefaultConnection
+        sync: false           # cadena del Session pooler de Supabase (con la contraseña)
+      - key: Jwt__Key
+        generateValue: true   # Render genera una clave aleatoria de 256 bits
+      - key: Cors__Origins__0
+        sync: false           # URL del frontend, p. ej. https://comerciotec.netlify.app
